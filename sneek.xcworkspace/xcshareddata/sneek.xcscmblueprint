@@ -1,0 +1,37 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "29411104D74820FFA4E6B85A62D1681B3B6C9DD2",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "ECEFC478F06C013C134D46FC013356B99060DD36" : 0,
+    "29411104D74820FFA4E6B85A62D1681B3B6C9DD2" : 9223372036854775807,
+    "34E0873A8524B986CB90CD31EF5406CBBA35BA46" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "D3FB8EE6-F145-428F-A63E-DE9EB1F7584C",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "ECEFC478F06C013C134D46FC013356B99060DD36" : "",
+    "29411104D74820FFA4E6B85A62D1681B3B6C9DD2" : "sneekproj-52d0ec5e3b8b8f2125dcc7140d48c675eff47b44\/",
+    "34E0873A8524B986CB90CD31EF5406CBBA35BA46" : "sneek\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "sneek",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "sneek.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:eamonwhiter73\/oxip.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "29411104D74820FFA4E6B85A62D1681B3B6C9DD2"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:eamonwhiter73\/sneekproj.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "34E0873A8524B986CB90CD31EF5406CBBA35BA46"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:eamonwhiter73\/sneek.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "ECEFC478F06C013C134D46FC013356B99060DD36"
+    }
+  ]
+}

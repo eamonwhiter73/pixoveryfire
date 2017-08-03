@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "Sneek": {
+      "applicationId": "MDgESuvjvz1K7l302i90N40A0EZDbwSKzb8k3QzL"
+    },
+    "_default": {
+      "link": "Sneek"
+    }
+  }
+}
