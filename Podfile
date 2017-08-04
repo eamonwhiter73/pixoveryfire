@@ -1,5 +1,5 @@
 target 'sneek' do
-  use_frameworks!
+  pod 'GeoFire', :git => 'https://github.com/firebase/geofire-objc.git'
   pod 'GoogleMaps'
   #pod 'AFNetworking', '~> 2.5'
   pod 'Firebase/Core'

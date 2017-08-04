@@ -16,6 +16,7 @@
 #import "AppDelegate.h"
 #import "InvisibleButtonView.h"
 @import Firebase;
+#import <GeoFire/GeoFire.h>
 
 @import GoogleMaps;
 
@@ -24,7 +25,6 @@ typedef void (^CompletionHandlerType)();
 @interface ViewController () {
     GMSMapView *mapView_;
     BOOL firstLocationUpdate_;
-    bool add;
     UIImageView *image;
     UIButton *respondButton;
     UIButton *xButton;
@@ -78,6 +78,8 @@ typedef void (^CompletionHandlerType)();
 - (void)viewDidLoad {
     
     userdefaults = [NSUserDefaults standardUserDefaults];
+    self.ref = [[FIRDatabase database] reference];
+    _add = NO;
     
     NSNumber *screenWidth = @([UIScreen mainScreen].bounds.size.width);
     
@@ -460,12 +462,75 @@ typedef void (^CompletionHandlerType)();
     [indicator bringSubviewToFront:self.view];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = TRUE;
     
-    PFGeoPoint *userGeoPoint = [PFGeoPoint geoPointWithLatitude:mapView.myLocation.coordinate.latitude longitude:mapView.myLocation.coordinate.longitude];
-    PFQuery *querygeo = [PFQuery queryWithClassName:@"MapPoints"];
-    [querygeo whereKey:@"location" nearGeoPoint:userGeoPoint withinMiles:0.0568];
-    querygeo.limit = 10;
+    /*PFGeoPoint *userGeoPoint = [PFGeoPoint geoPointWithLatitude:mapView.myLocation.coordinate.latitude longitude:mapView.myLocation.coordinate.longitude];
+    PFQuery *querygeo = [PFQuery queryWithClassName:@"MapPoints"];*/
+    //FIRDatabaseReference *geofireRef = [[FIRDatabase database] reference];
+    //GeoFire *geoFire = [[GeoFire alloc] initWithFirebaseRef:geofireRef];
+    FIRStorage *storage = [FIRStorage storage];
+    NSString* fileName = [[NSString alloc] initWithFormat:@"%@%@%@", @"pictures/", [marker.userData objectForKey:@"marker_id"], @".jpeg"];
+    FIRStorageReference *pathReference = [storage referenceWithPath:fileName];
     
-    [querygeo findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+    // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
+    [pathReference dataWithMaxSize:1 * 1024 * 1024 completion:^(NSData *data, NSError *error){
+        if (error != nil) {
+            NSLog(@"%@", [error description]);
+            
+            /*deviceNotFoundAlertController = [UIAlertController alertControllerWithTitle:@"HMMM" message:@"Maybe your connection is bad" preferredStyle:UIAlertControllerStyleAlert];
+            
+            [deviceNotFoundAlertController addAction:deviceNotFoundAlert];
+            [self presentViewController:deviceNotFoundAlertController animated:NO completion:NULL];*/
+            
+            [indicator stopAnimating];
+        } else {
+            // Data for "images/island.jpg" is returned
+            UIImage *islandImage = [UIImage imageWithData:data];
+            image.image = islandImage;
+            
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                [image setHidden:NO];
+                [respondButton setHidden:NO];
+                [xButton setHidden:NO];
+                [infobut setHidden:YES];
+                [reportButton setHidden:NO];
+            });
+            
+            if([[[NSString alloc] initWithString:[userdefaults objectForKey:@"new"]] isEqualToString:@"new"]) {
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    
+                    [resptute setHidden:NO];
+                    [self.view bringSubviewToFront:resptute];
+                    
+                });
+            }
+            
+            [indicator stopAnimating];
+
+        }
+    }];
+    
+    /*[geoFire getLocationForKey:[marker.userData objectForKey:@"markerid"] withCallback:^(CLLocation *location, NSError *error) {
+        if (error != nil) {
+            NSLog(@"An error occurred getting the location for \"firebase-hq\": %@", [error localizedDescription]);
+        } else if (location != nil) {
+            NSLog(@"Location for \"firebase-hq\" is [%f, %f]",
+                  location.coordinate.latitude,
+                  location.coordinate.longitude);
+        } else {
+            NSLog(@"GeoFire does not contain a location for \"firebase-hq\"");
+        }
+    }];*/
+    
+    //CLLocation *center = [[CLLocation alloc] initWithLatitude:mapView.myLocation.coordinate.latitude longitude:-122.4056973];
+    // Query locations at [37.7832889, -122.4056973] with a radius of 600 meters
+    //GFCircleQuery *circleQuery = [geoFire queryAtLocation:center withRadius:0.0914107392];
+    //[querygeo whereKey:@"location" nearGeoPoint:userGeoPoint withinMiles:0.0568];
+    //querygeo.limit = 10;
+    
+    //[circleQuery observeEventType:GFEventTypeKeyEntered withBlock:^(NSString *key, CLLocation *location) {
+        //NSLog(@"Key '%@' entered the search area and is at location '%@'", key, location);
+    //}];
+    
+    /*[querygeo findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
 
         for(PFGeoPoint* object in objects) {
             
@@ -635,7 +700,7 @@ typedef void (^CompletionHandlerType)();
                 }
             }];
         }
-    }];
+    }];*/
 }
 
 - (void)delayForDissapear:(UILabel*)label {
@@ -780,25 +845,243 @@ typedef void (^CompletionHandlerType)();
     if(!isResponding) {
         
         [indicator startAnimating];
+        
+        FIRStorage *storage = [FIRStorage storage];
+        FIRStorageReference *storageRef = [storage reference];
     
         UIImageWriteToSavedPhotosAlbum(info[UIImagePickerControllerOriginalImage], nil, nil, nil);
-    
-        NSString * uploadURL = @"http://www.eamondev.com/sneekback/upload.php";
-        NSLog(@"uploadImageURL: %@", uploadURL);
-        NSData *imageData = UIImageJPEGRepresentation(info[UIImagePickerControllerOriginalImage], 0.5);
         
-        _manager = [AFHTTPSessionManager manager];
+        // Data in memory
+        NSData *data = UIImageJPEGRepresentation(info[UIImagePickerControllerOriginalImage], 0.5);
+        
+        NSUUID *uuid = [[NSUUID alloc] init];
+        NSString *pathHold = [NSString stringWithFormat:@"%@/%@", @"pictures/", uuid];
+        NSString *finalPath = [NSString stringWithFormat:@"%@%@", pathHold, @".jpeg"];
+                              
+        
+        // Create a reference to the file you want to upload
+        FIRStorageReference *refF = [storageRef child:finalPath];
+        /*NSDictionary *metaData = [[NSDictionary alloc] initWithObjectsAndKeys:[userdefaults objectForKey:@"pfuser"], @"username", [userdefaults valueForKey:@"count"], @"count", nil];*/
+        FIRStorageMetadata *metadata = [[FIRStorageMetadata alloc] init];
+        metadata.contentType = @"image/jpeg";
+        
+        
+        
+        // Upload the file to the path "images/rivers.jpg"
+        FIRStorageUploadTask *uploadTask =
+            [refF putData:data
+                 metadata:metadata
+               completion:^(FIRStorageMetadata *metadata,
+                            NSError *error) {
+                   if (error != nil) {
+                       NSLog(@"%@", [error description]);
+                       [indicator stopAnimating];
+                   } else {
+                       
+                       // Metadata contains file metadata such as size, content-type, and download URL.
+                       NSURL *downloadURL = metadata.downloadURL;
+                       NSLog(@"%@", downloadURL);
+                       
+                       matched = [[NSNumber alloc] initWithBool:NO];
+                       
+                       FIRDatabaseReference *geofireRef = [[[FIRDatabase database] reference] child:@"pointloc/"];
+                       GeoFire *geoFire = [[GeoFire alloc] initWithFirebaseRef:geofireRef];
+                       
+                       [geoFire setLocation:[[CLLocation alloc] initWithLatitude:mapView_.myLocation.coordinate.latitude longitude:mapView_.myLocation.coordinate.longitude]
+                                     forKey:[[NSString alloc] initWithFormat:@"%@", uuid] withCompletionBlock:^(NSError *error) {
+                                         if (error != nil) {
+                                             
+                                             
+                                             
+                                             NSLog(@"An error occurred: %@", error);
+                                         } else {
+                                             NSLog(@"Saved location successfully!");
+                                             
+                                             
+                                             NSUInteger count = [userdefaults integerForKey:@"count"];
+                                             NSNumber *stored = [NSNumber numberWithInteger:count];
+                                             count++;
+                                             [userdefaults setInteger:count forKey:@"count"];
+                                             
+                                             
+                                             [[[_ref child:@"pointdata/"] child:[[NSString alloc] initWithFormat:@"%@", uuid]]
+                                              setValue:@{@"title": [userdefaults objectForKey:@"pfuser"], @"count": stored, @"matched": matched/*, @"marker_id": [[NSString alloc] initWithFormat:@"%@", uuid]*/} withCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
+                                                  NSLog(@"Location set and in database (((()()()()()()()()");
+                                                  
+                                                  GMSMarker *marker3 = [[GMSMarker alloc] init];
+                                                  marker3.position = mapView_.myLocation.coordinate;
+                                                  marker3.title = [userdefaults objectForKey:@"pfuser"];
+                                                  marker3.icon = [UIImage imageNamed:@"marker"];
+                                                  marker3.userData = @{@"marker_id":uuid};
+                                                  marker3.map = mapView_;
+                                                  [indicator stopAnimating];
+                                              }];
+                                             
+                                             if([[[NSString alloc] initWithString:[userdefaults objectForKey:@"new"]] isEqualToString:@"new"]) {
+                                                 dispatch_async(dispatch_get_main_queue(), ^(void){
+                                                     [tute setHidden:NO];
+                                                 });
+                                             }
+
+                                         }
+                                     }];
+                       
+                       
+                       
+
+
+                       
+                       [indicator stopAnimating];
+                   }
+               }];
+        
+        
+
+    
+        //NSString * uploadURL = @"http://www.eamondev.com/sneekback/upload.php";
+        //NSLog(@"uploadImageURL: %@", uploadURL);
+        //NSData *imageData = UIImageJPEGRepresentation(info[UIImagePickerControllerOriginalImage], 0.5);
+        
+        /*_manager = [AFHTTPSessionManager manager];
         _manager.responseSerializer=[AFJSONResponseSerializer serializerWithReadingOptions:NSJSONReadingAllowFragments];
         _manager.responseSerializer.acceptableContentTypes = [_manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
-        _manager.responseSerializer.acceptableContentTypes = [_manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];
+        _manager.responseSerializer.acceptableContentTypes = [_manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];*/
         
-        NSString *usernameEncoded = [[userdefaults objectForKey:@"pfuser"] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+        /*NSString *usernameEncoded = [[userdefaults objectForKey:@"pfuser"] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];*/
         
-        NSDictionary *params = @{@"username": usernameEncoded, @"count": [userdefaults valueForKey:@"count"]};
+        //NSDictionary *params = @{@"username": usernameEncoded, @"count": [userdefaults valueForKey:@"count"]};
+        
+        
+        
         
         [pickery dismissViewControllerAnimated:YES completion:NULL];
         
-        PFQuery *quer = [PFQuery queryWithClassName:@"MapPoints"];
+        NSLog(@"%d THIS IS ADDKJDLLDJKKLJDJKLDJKDKJDLJKLD   ", _add);
+        
+        /*if(_add) {
+            NSLog(@"****&*&&**&*&&*&* in _add**(*(*(**U(*U(*U(*(U*(U");
+        
+            NSUInteger count = [userdefaults integerForKey:@"count"];
+            NSNumber *stored = [NSNumber numberWithInteger:count];
+            count++;
+            [userdefaults setInteger:count forKey:@"count"];
+            
+            
+            [[[_ref child:@"points"] child:[[NSString alloc] initWithFormat:@"%@", uuid]]
+             setValue:@{@"title": [userdefaults objectForKey:@"pfuser"], @"count": stored, @"matched": matched, @"marker_id": uuid} withCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
+                 NSLog(@"Location set and in database (((()()()()()()()()");
+                 
+                 GMSMarker *marker3 = [[GMSMarker alloc] init];
+                 marker3.position = mapView_.myLocation.coordinate;
+                 marker3.title = [userdefaults objectForKey:@"pfuser"];
+                 marker3.icon = [UIImage imageNamed:@"marker"];
+                 marker3.userData = @{@"marker_id":r};
+                 marker3.map = mapView_;
+                 [indicator stopAnimating];
+             }];
+            
+            if([[[NSString alloc] initWithString:[userdefaults objectForKey:@"new"]] isEqualToString:@"new"]) {
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    [tute setHidden:NO];
+                });
+            }
+            
+        else {
+            [indicator stopAnimating];
+            deviceNotFoundAlertController = [UIAlertController alertControllerWithTitle:@"PLEASE MOVE A LITTLE" message:@"You are within 1.1 meters of another pix - to take a picture, you must move a few feet." preferredStyle:UIAlertControllerStyleAlert];
+            
+            [deviceNotFoundAlertController addAction:deviceNotFoundAlert];
+            
+            [self presentViewController:deviceNotFoundAlertController animated:NO completion:NULL];
+            _add= YES;
+        }
+    }*/
+        /*if(add) {
+            
+            matched = [[NSNumber alloc] initWithBool:NO];
+            
+            FIRDatabaseReference *geofireRef = [[FIRDatabase database] reference];
+            GeoFire *geoFire = [[GeoFire alloc] initWithFirebaseRef:geofireRef];
+            
+            NSUUID *uuid = [[NSUUID alloc] init];
+            
+            [geoFire setLocation:[[CLLocation alloc] initWithLatitude:mapView_.myLocation.coordinate.latitude longitude:mapView_.myLocation.coordinate.longitude]
+                  forKey:[[NSString alloc] initWithFormat:@"%@", uuid] withCompletionBlock:^(NSError *error) {
+                      if (error != nil) {
+                          NSLog(@"An error occurred: %@", error);
+                      } else {
+                          NSLog(@"Saved location successfully!");
+                          self.ref = [[FIRDatabase database] reference];
+                          
+                          NSUInteger count = [userdefaults integerForKey:@"count"];
+                          NSNumber *stored = [NSNumber numberWithInteger:count];
+                          count++;
+                          [userdefaults setInteger:count forKey:@"count"];
+                          
+                          [[[_ref child:@"points"] child:[[NSString alloc] initWithFormat:@"%@", uuid]]
+                           setValue:@{@"title": [userdefaults objectForKey:@"pfuser"], @"count": stored, @"matched": matched, @"marker_id": uuid} withCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
+                               NSLog(@"Location set and in database (((()()()()()()()()");
+                               
+                               GMSMarker *marker3 = [[GMSMarker alloc] init];
+                               marker3.position = mapView_.myLocation.coordinate;
+                               marker3.title = [userdefaults objectForKey:@"pfuser"];
+                               marker3.icon = [UIImage imageNamed:@"marker"];
+                               marker3.userData = @{@"marker_id":r};
+                               marker3.map = mapView_;
+                               [indicator stopAnimating];
+                           }];
+                      }
+                  }];
+            
+            if([[[NSString alloc] initWithString:[userdefaults objectForKey:@"new"]] isEqualToString:@"new"]) {
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    [tute setHidden:NO];
+                });
+            }*/
+            
+            /*PFGeoPoint *point = [PFGeoPoint geoPointWithLatitude:mapView_.myLocation.coordinate.latitude longitude:mapView_.myLocation.coordinate.longitude];
+            
+            PFObject *pointstore = [PFObject objectWithClassName:@"MapPoints"];
+            pointstore[@"title"] = [userdefaults objectForKey:@"pfuser"];
+            pointstore[@"location"] = point;
+            pointstore[@"count"] = stored;
+            pointstore[@"matched"] = matched;
+            pointstore[@"marker_id"] = r;
+            
+            [pointstore saveEventually:^(BOOL succeeded, NSError *error) {
+                
+                if (error) {
+                    deviceNotFoundAlertController = [UIAlertController alertControllerWithTitle:@"PROBLEM" message:@"Something went wrong, try again." preferredStyle:UIAlertControllerStyleAlert];
+                    [deviceNotFoundAlertController addAction:deviceNotFoundAlert];
+                    [self presentViewController:deviceNotFoundAlertController animated:NO completion:NULL];
+                }
+                else {
+                    GMSMarker *marker3 = [[GMSMarker alloc] init];
+                    marker3.position = mapView_.myLocation.coordinate;
+                    marker3.title = [userdefaults objectForKey:@"pfuser"];
+                    marker3.icon = [UIImage imageNamed:@"marker"];
+                    marker3.userData = @{@"marker_id":r};
+                    marker3.map = mapView_;
+                }
+            }];
+            
+            [indicator stopAnimating];
+            
+            if([[[NSString alloc] initWithString:[userdefaults objectForKey:@"new"]] isEqualToString:@"new"]) {
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    [tute setHidden:NO];
+                });
+            }
+        }
+        else {
+            
+        }*/
+        
+        
+        
+        //*******PUT BACK IN*******//
+        
+        /*PFQuery *quer = [PFQuery queryWithClassName:@"MapPoints"];
         [quer findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             if (!error) {
                 r = [[NSString alloc] initWithString:[self randomStringWithLength:8]];
@@ -813,18 +1096,22 @@ typedef void (^CompletionHandlerType)();
                 [deviceNotFoundAlertController addAction:deviceNotFoundAlert];
                 [self presentViewController:deviceNotFoundAlertController animated:NO completion:NULL];
             }
-        }];
+        }];*/
+        
+        //*******PUT BACK IN*******// above
 
-        [_manager POST:@"http://www.eamondev.com/sneekback/upload.php" parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        /*[_manager POST:@"http://www.eamondev.com/sneekback/upload.php" parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
             [formData appendPartWithFileData:imageData name:@"file" fileName:@"file.jpg" mimeType:@"image/jpeg"];
-        } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            
-            NSUInteger count = [userdefaults integerForKey:@"count"];
+        } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {*/
+        
+            //*******PUT BACK IN*******//
+        
+            /*NSUInteger count = [userdefaults integerForKey:@"count"];
             NSNumber *stored = [NSNumber numberWithInteger:count];
             count++;
             [userdefaults setInteger:count forKey:@"count"];
             
-            add = true;
+            _add= true;
             
             PFQuery *query = [PFQuery queryWithClassName:@"MapPoints"];
             [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -832,7 +1119,7 @@ typedef void (^CompletionHandlerType)();
                     for (PFObject *object in objects) {
                         if(fabs((float)mapView_.myLocation.coordinate.latitude - (float)[[object objectForKey:@"location"] latitude]) <= 0.00001 && fabs((float)mapView_.myLocation.coordinate.longitude - (float)[[object objectForKey:@"location"] longitude]) <= 0.00001) {
                             
-                            add = false;
+                            _add= false;
                         }
                     }
                 }else{
@@ -841,6 +1128,8 @@ typedef void (^CompletionHandlerType)();
                     [self presentViewController:deviceNotFoundAlertController animated:NO completion:NULL];
                 }
             }];
+        
+        
             
             if(add) {
                 
@@ -887,9 +1176,12 @@ typedef void (^CompletionHandlerType)();
                 [deviceNotFoundAlertController addAction:deviceNotFoundAlert];
                 
                 [self presentViewController:deviceNotFoundAlertController animated:NO completion:NULL];
-                add = true;
-            }
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                _add= true;
+            }*/
+        
+            //*******PUT BACK IN*******// above
+        
+        /*} failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"Error: %@ *****", error);
             [indicator stopAnimating];
             deviceNotFoundAlertController = [UIAlertController alertControllerWithTitle:@"SORRY" message:@"Either you are taking a nude picture, or your connection is bad" preferredStyle:UIAlertControllerStyleAlert];
@@ -898,6 +1190,7 @@ typedef void (^CompletionHandlerType)();
             
             [self presentViewController:deviceNotFoundAlertController animated:NO completion:NULL];
         }];
+        }*/
     }
     else {
         [tute removeFromSuperview];

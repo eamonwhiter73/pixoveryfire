@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BEFED30E65A7409C8D6EC0C7 /* Pods_sneek.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2B7EA71C23FD75A3A9CCE75 /* Pods_sneek.framework */; };
+		72758855C24E50B013B4F271 /* libPods-sneek.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5F37FB315E1723B9CE810BE /* libPods-sneek.a */; };
 		DD08D70C1D8495B2002D9D11 /* RespTutorial.m in Sources */ = {isa = PBXBuildFile; fileRef = DD08D70B1D8495B2002D9D11 /* RespTutorial.m */; };
 		DD1F1CB41D6647FF00D55484 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DD1F1CB31D6647FF00D55484 /* main.m */; };
 		DD3000FD1C067A95002E43C1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3000FC1C067A95002E43C1 /* AppDelegate.m */; };
@@ -76,7 +76,7 @@
 
 /* Begin PBXFileReference section */
 		7F3F944061E26591A45A6388 /* Pods-sneek.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sneek.release.xcconfig"; path = "Pods/Target Support Files/Pods-sneek/Pods-sneek.release.xcconfig"; sourceTree = "<group>"; };
-		C2B7EA71C23FD75A3A9CCE75 /* Pods_sneek.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_sneek.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D5F37FB315E1723B9CE810BE /* libPods-sneek.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sneek.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD08D70A1D8495A5002D9D11 /* RespTutorial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RespTutorial.h; sourceTree = "<group>"; };
 		DD08D70B1D8495B2002D9D11 /* RespTutorial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RespTutorial.m; sourceTree = "<group>"; };
 		DD1F1CB31D6647FF00D55484 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = sneek/main.m; sourceTree = "<group>"; };
@@ -180,7 +180,7 @@
 				DD55378C1C06A330002B52DD /* AudioToolbox.framework in Frameworks */,
 				DDA63BCF1D63B54500A9E878 /* GoogleMaps.framework in Frameworks */,
 				DD8D199E1C26E84F000E7418 /* Bolts.framework in Frameworks */,
-				BEFED30E65A7409C8D6EC0C7 /* Pods_sneek.framework in Frameworks */,
+				72758855C24E50B013B4F271 /* libPods-sneek.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,7 +225,7 @@
 				DD55378F1C06A341002B52DD /* CoreGraphics.framework */,
 				DD55378D1C06A338002B52DD /* CFNetwork.framework */,
 				DD55378B1C06A330002B52DD /* AudioToolbox.framework */,
-				C2B7EA71C23FD75A3A9CCE75 /* Pods_sneek.framework */,
+				D5F37FB315E1723B9CE810BE /* libPods-sneek.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

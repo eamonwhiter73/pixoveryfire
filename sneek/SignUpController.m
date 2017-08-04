@@ -9,8 +9,7 @@
 #import "SignUpController.h"
 #import "ViewController.h"
 #import <Parse/Parse.h>
-@import FirebaseDatabase;
-@import FirebaseAuth;
+@import Firebase;
 
 @interface NSString (emailValidation)
 - (BOOL)isValidEmail;
