@@ -58,6 +58,7 @@ typedef void (^CompletionHandlerType)();
     RespTutorial *resptute;
     UILabel *tute;
     InvisibleButtonView *invisible;
+    NSUUID *uuid;
 }
 
 @end
@@ -503,6 +504,21 @@ typedef void (^CompletionHandlerType)();
                 });
             }
             
+            [[[_ref child:@"pointdata"] child:[[NSString alloc] initWithFormat:@"%@", [marker.userData objectForKey:@"marker_id"]]] observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+                // Get user value
+                //User *user = [[User alloc] initWithUsername:snapshot.value[@"username"]];
+                //NSLog(@"%@ coucoucn toucocncount ocunceou     ", [snapshot valueForKey:@"count"]);
+                NSLog(@"%@", snapshot);
+                NSDictionary *dict = snapshot.value;
+                staticCount = [dict valueForKey:@"count"];
+                newtitle = [dict valueForKey:@"title"];
+                // ...
+            } withCancelBlock:^(NSError * _Nonnull error) {
+                NSLog(@"%@", error.localizedDescription);
+            }];
+            
+            //staticCount = [object valueForKey:@"count"];
+            
             [indicator stopAnimating];
 
         }
@@ -854,7 +870,7 @@ typedef void (^CompletionHandlerType)();
         // Data in memory
         NSData *data = UIImageJPEGRepresentation(info[UIImagePickerControllerOriginalImage], 0.5);
         
-        NSUUID *uuid = [[NSUUID alloc] init];
+        uuid = [[NSUUID alloc] init];
         NSString *pathHold = [NSString stringWithFormat:@"%@/%@", @"pictures/", uuid];
         NSString *finalPath = [NSString stringWithFormat:@"%@%@", pathHold, @".jpeg"];
                               
@@ -912,7 +928,7 @@ typedef void (^CompletionHandlerType)();
                                                   marker3.position = mapView_.myLocation.coordinate;
                                                   marker3.title = [userdefaults objectForKey:@"pfuser"];
                                                   marker3.icon = [UIImage imageNamed:@"marker"];
-                                                  marker3.userData = @{@"marker_id":uuid};
+                                                  marker3.userData = @{@"marker_id":[ref key]};
                                                   marker3.map = mapView_;
                                                   [indicator stopAnimating];
                                               }];
@@ -1254,7 +1270,7 @@ typedef void (^CompletionHandlerType)();
             
             matchesNumber.text = [[NSString alloc] initWithFormat:@"%lu", (unsigned long)matches];
             
-            PFUser *currentUser = [PFUser currentUser];
+            /*PFUser *currentUser = [PFUser currentUser];
             if (currentUser) {
                 [currentUser setValue:matchesNumber.text forKey:@"matches"];
                 [currentUser saveInBackground];
@@ -1272,18 +1288,34 @@ typedef void (^CompletionHandlerType)();
                                                         [self presentViewController:deviceNotFoundAlertController animated:NO completion:NULL];
                                                     }
                                                 }];
-            }
+            }*/
             
-            [deleteObjectId deleteInBackground];
+            [[[_ref child:@"userData"] child:[userdefaults valueForKey:@"uid"]]
+             setValue:@{@"matches":matchesNumber.text} withCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
+                 NSLog(@"updated matchessssssss &&&*&*&**&*&&*)()()()()");
+                 
+            }];
             
-            PFQuery *sosQuery = [PFUser query];
+            FIRDatabaseReference *geofireRef = [[[FIRDatabase database] reference] child:@"pointloc/"];
+            GeoFire *geoFire = [[GeoFire alloc] initWithFirebaseRef:geofireRef];
+            
+            NSLog(@"%@ UUUUUUUUUUUIIIIIIIDDDDD ^^^%%%^%^%^%^    ", uuid);
+            [geoFire removeKey:[uuid UUIDString]];
+            
+            [[[_ref child:@"pointdata/"] child:[uuid UUIDString]] removeValueWithCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
+                NSLog(@"removed   9808989(**(*(*(8898989898989");
+            }];            //[deleteObjectId deleteInBackground];
+            
+            //ADD PUSH BACK IN **********//
+            /*PFQuery *sosQuery = [PFUser query];
             [sosQuery whereKey:@"username" equalTo:newtitle];
             sosQuery.limit = 1;
             
             [sosQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
                 [PFCloud callFunctionInBackground:@"sendpush"
                                    withParameters:@{@"user":(PFUser *)object.objectId, @"username":[userdefaults objectForKey:@"pfuser"]}];
-            }];
+            }];*/
+            //ADD PUSH BACK IN **********//
             
             [respondButton setUserInteractionEnabled:YES];
             [respondButton setEnabled:YES];
@@ -1294,7 +1326,7 @@ typedef void (^CompletionHandlerType)();
             if([[[NSString alloc] initWithString:[userdefaults objectForKey:@"new"]] isEqualToString:@"new"]) {
                 [userdefaults setObject:@"old" forKey:@"new"];
                 
-                PFQuery *query = [PFQuery queryWithClassName:@"MapPoints"];
+                /*PFQuery *query = [PFQuery queryWithClassName:@"MapPoints"];
                 [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                     if (!error) {
                         for (PFObject *object in objects) {
@@ -1310,7 +1342,7 @@ typedef void (^CompletionHandlerType)();
                     }else{
                         NSLog(@"%@", [error description]);
                     }
-                }];
+                }];*/
             }
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             
