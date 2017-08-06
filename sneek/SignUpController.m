@@ -245,17 +245,24 @@
                                      [userdefaults setObject:@"new" forKey:@"new"];
                                      [userdefaults setObject:passwordTextField.text forKey:@"pfpass"];
                                      [userdefaults setObject:emailFieldLoc.text forKey:@"pfemail"];
-                                     [userdefaults setObject:user.uid forKey:@"uid"];
+                                     [userdefaults setObject:user.uid forKey:@"uuid"];
                                      [userdefaults setInteger:0 forKey:@"count"];
                                      [userdefaults synchronize];
                                      
-                                     [[[_ref child:@"userData"] child:[userdefaults valueForKey:@"uid"]]
-                                      setValue:@{@"matches": @0}];
+                                     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:textFieldLoc.text, @"username", @0, @"matches", nil];
                                      
-                                     [self dismissViewControllerAnimated:YES completion:nil];
+                                     NSLog(@"%@  uuuiiiidd    ", [userdefaults valueForKey:@"uuid"]);
                                      
-                                     ViewController* map = [[ViewController alloc] init];
-                                     [[[[UIApplication sharedApplication] delegate] window] setRootViewController:map];
+                                    [[[_ref child:@"userData"] child:[userdefaults valueForKey:@"uuid"]] setValue:params withCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
+                                        [self dismissViewControllerAnimated:YES completion:nil];
+                                        
+                                        ViewController* map = [[ViewController alloc] init];
+                                        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:map];
+                                    }];
+                                     
+                                    /*[[[[_ref child:@"userData"] child:[userdefaults valueForKey:@"uuid"]] child:@"matches"] setValue:@0];*/
+                                     
+                                     
 
                                  }];
         //user.email = emailFieldLoc.text;

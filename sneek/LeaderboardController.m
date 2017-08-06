@@ -42,6 +42,7 @@
 }
 
 - (void)viewDidLoad {
+    self.ref = [[FIRDatabase database] reference];
 
     [self.view setBackgroundColor:[UIColor colorWithRed:156.0f/255.0f green:214.0f/255.0f blue:215.0f/255.0f alpha:1.0f]];
     tableData = [[NSMutableArray alloc] init];
@@ -191,7 +192,47 @@
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"SimpleTableItem"];
     [_tableViewScore registerClass:[UITableViewCell class] forCellReuseIdentifier:@"SimpleTableItem"];
     
-    PFQuery *query = [PFQuery queryWithClassName:@"_User"];
+    
+    [[_ref child:@"userData/"] observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+        
+        NSLog(@"INSIDE LEADERBOARD REFFFFFF ******");
+        
+        NSLog(@"%@   &&&&& snapppyyy  ((((((((", snapshot);
+        if([snapshot exists]) {
+            NSDictionary *dict = snapshot.value;
+            //NSLog(@"%@", [dict valueForKeyPath:@"data.abcd"][0];
+            //__block int sum = 0;
+            entries = [NSMutableArray new];
+            [dict enumerateKeysAndObjectsUsingBlock:^(NSString* key, NSNumber* value, BOOL* stop) {
+                //sum += value.intValue;
+                NSLog(@"%@ username  ", [value valueForKey:@"username"]);
+                NSLog(@"%@ matches  ", [value valueForKey:@"matches"]);
+                
+                    [tableData addObject:[value valueForKey:@"username"]];
+                    [matchesForUser addObject:[[NSString alloc] initWithFormat:@"%@", [value valueForKey:@"matches"]]];
+                    
+                    NSMutableDictionary* entry = [NSMutableDictionary new];
+                    
+                    entry[@"username"] = [value valueForKey:@"username"];
+                    entry[@"matches"] = [[NSString alloc] initWithFormat:@"%@", [value valueForKey:@"matches"]];
+                    
+                    [entries addObject:entry];
+            }];
+            
+            NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"matches" ascending:NO selector:@selector(localizedStandardCompare:)];
+            NSArray *entrieshold = [entries sortedArrayUsingDescriptors:@[descriptor]];
+            transfer = [entrieshold copy];
+            
+            [_tableView reloadData];
+            [_tableViewScore reloadData];
+
+        }
+
+    } withCancelBlock:^(NSError * _Nonnull error) {
+        NSLog(@"%@", error.localizedDescription);
+    }];
+    
+    /*PFQuery *query = [PFQuery queryWithClassName:@"_User"];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (!error) {
@@ -218,7 +259,7 @@
                 NSLog(@"%@", [error description]);
             }
         });
-    }];
+    }];*/
     
     [backToMap setFrame:backtomaprect];
     backToMap.backgroundColor = [UIColor colorWithRed:218.0f/255.0f green:247.0f/255.0f blue:220.0f/255.0f alpha:1.0f];
@@ -298,7 +339,7 @@
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleTableIdentifier];
         }
         
-        NSString *matchAmount = [[transfer objectAtIndex:indexPath.row] valueForKey:@"matches"];
+        NSString *matchAmount = [[NSString alloc] initWithFormat:@"%@", [[transfer objectAtIndex:indexPath.row] valueForKey:@"matches"]];
         
         cell.textLabel.text = matchAmount;
         

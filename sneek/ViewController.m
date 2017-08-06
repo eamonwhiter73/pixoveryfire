@@ -143,7 +143,59 @@ typedef void (^CompletionHandlerType)();
         [resptute setHidden:YES];
     }
     else {
-        PFQuery *query = [PFQuery queryWithClassName:@"MapPoints"];
+        NSMutableArray *array = [[NSMutableArray alloc] init];
+        
+        [[_ref child:@"pointloc/"] observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+            // Get user value
+            NSLog(@"%@", snapshot.value);
+            if([snapshot exists]) {
+                NSDictionary *dict = snapshot.value;
+                //NSLog(@"%@", [dict valueForKeyPath:@"data.abcd"][0];
+                //__block int sum = 0;
+                [dict enumerateKeysAndObjectsUsingBlock:^(NSString* key, NSNumber* value, BOOL* stop) {
+                    //sum += value.intValue;
+                    NSLog(@"%@", [value valueForKey:@"l"]);
+                    
+                    [array addObject:[value valueForKey:@"l"]];
+                }];
+            }
+            // ...
+        } withCancelBlock:^(NSError * _Nonnull error) {
+            NSLog(@"%@", error.localizedDescription);
+        }];
+        
+        [[_ref child:@"pointdata/"] observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+            // Get user value
+            NSLog(@"%@", snapshot);
+            if([snapshot exists]) {
+
+                NSDictionary *dict = snapshot.value;
+                //NSLog(@"%@", [dict valueForKeyPath:@"data.abcd"][0];
+                __block int counter = 0;
+                [dict enumerateKeysAndObjectsUsingBlock:^(NSString* key, NSNumber* value, BOOL* stop) {
+                    //sum += value.intValue;
+                    NSLog(@"%@", [value valueForKey:@"title"]);
+                    NSLog(@"%f", [[array objectAtIndex:counter][0] doubleValue]);
+                    //NSString* latitude = [[array objectAtIndex:counter][0] value];
+                    //NSString* longitude = [array objectAtIndex:counter][1];
+                    //long latitude = [array objectAtIndex:counter][0];
+                    GMSMarker *initMarker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake([[array objectAtIndex:counter][0] doubleValue], [[array objectAtIndex:counter][1] doubleValue])];
+                    initMarker.title = [value valueForKey:@"title"];
+                    initMarker.appearAnimation = kGMSMarkerAnimationPop;
+                    initMarker.icon = [UIImage imageNamed:@"marker"];
+                    initMarker.userData = @{@"marker_id":key};
+                    initMarker.map = mapView_;
+                    
+                    counter++;
+                }];
+            }
+            // ...
+        } withCancelBlock:^(NSError * _Nonnull error) {
+            NSLog(@"%@", error.localizedDescription);
+        }];
+        
+        
+        /*PFQuery *query = [PFQuery queryWithClassName:@"MapPoints"];
         [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             if (!error) {
                 for (PFObject *object in objects) {
@@ -159,7 +211,7 @@ typedef void (^CompletionHandlerType)();
             }else{
                 NSLog(@"%@", [error description]);
             }
-        }];
+        }];*/
     }
     
     UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -857,6 +909,8 @@ typedef void (^CompletionHandlerType)();
     [self.view addSubview:indicator];
     [indicator bringSubviewToFront:self.view];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = TRUE;
+    
+    uuid = [[NSUUID alloc] init];
 
     if(!isResponding) {
         
@@ -870,7 +924,7 @@ typedef void (^CompletionHandlerType)();
         // Data in memory
         NSData *data = UIImageJPEGRepresentation(info[UIImagePickerControllerOriginalImage], 0.5);
         
-        uuid = [[NSUUID alloc] init];
+        
         NSString *pathHold = [NSString stringWithFormat:@"%@/%@", @"pictures/", uuid];
         NSString *finalPath = [NSString stringWithFormat:@"%@%@", pathHold, @".jpeg"];
                               
@@ -1241,8 +1295,19 @@ typedef void (^CompletionHandlerType)();
         
         NSString* chaleng = [userdefaults objectForKey:@"pfuser"];
         
+        UIImage *image1 = info[UIImagePickerControllerOriginalImage];
+        UIImage *image2 = image.image;
+        NSArray *array = @[image1,image2];
+        
+        __block int i = 0;
         [_manager POST:@"http://www.eamondev.com/sneekback/respond.php" parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-            [formData appendPartWithFileData:imageData name:@"file" fileName:chaleng mimeType:@"image/jpeg"];
+            for(UIImage *eachImage in array)
+            {
+                NSData *imageData = UIImageJPEGRepresentation(eachImage,0.5);
+                [formData appendPartWithFileData:imageData name:[[NSString alloc] initWithFormat:@"file%d",i] fileName:[NSString stringWithFormat:@"file%d%@.jpg",i, [userdefaults objectForKey:@"pfuser"]] mimeType:@"image/jpeg"];
+                i++;
+            }
+            //[formData appendPartWithFileData:imageData name:@"file" fileName:chaleng mimeType:@"image/jpeg"];
         } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             
             dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -1264,7 +1329,7 @@ typedef void (^CompletionHandlerType)();
             
             [self presentViewController:deviceNotFoundAlertController animated:NO completion:NULL];
             
-            NSUInteger matches = [userdefaults integerForKey:@"matches"];
+            NSInteger matches = [userdefaults integerForKey:@"matches"];
             matches++;
             [userdefaults setInteger:matches forKey:@"matches"];
             
@@ -1290,22 +1355,46 @@ typedef void (^CompletionHandlerType)();
                                                 }];
             }*/
             
-            [[[_ref child:@"userData"] child:[userdefaults valueForKey:@"uid"]]
-             setValue:@{@"matches":matchesNumber.text} withCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
-                 NSLog(@"updated matchessssssss &&&*&*&**&*&&*)()()()()");
-                 
-            }];
+            
             
             FIRDatabaseReference *geofireRef = [[[FIRDatabase database] reference] child:@"pointloc/"];
             GeoFire *geoFire = [[GeoFire alloc] initWithFirebaseRef:geofireRef];
             
-            NSLog(@"%@ UUUUUUUUUUUIIIIIIIDDDDD ^^^%%%^%^%^%^    ", uuid);
-            [geoFire removeKey:[uuid UUIDString]];
+            NSLog(@"%@ UUUUUUUUUUUIIIIIIIDDDDD   ", uuid);
+            [geoFire removeKey:[staticMarker.userData objectForKey:@"marker_id"]];
             
-            [[[_ref child:@"pointdata/"] child:[uuid UUIDString]] removeValueWithCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
+            NSNumber *match = [[NSNumber alloc] initWithInt:(int)matches];
+            
+            NSLog(@"%@", [userdefaults objectForKey:@"uuid"]);
+            
+            [[[_ref child:@"userData/"] child:[userdefaults objectForKey:@"uuid"]] setValue:@{@"matches":match, @"username":[userdefaults objectForKey:@"pfuser"]}];
+            
+            [[[_ref child:@"pointdata/"] child:[staticMarker.userData objectForKey:@"marker_id"]] removeValueWithCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
                 NSLog(@"removed   9808989(**(*(*(8898989898989");
             }];            //[deleteObjectId deleteInBackground];
             
+            
+            [[[[self.ref child:@"userData"] queryOrderedByChild:@"username"]
+              queryEqualToValue:newtitle]
+                observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+                 
+                 if (snapshot.value != [NSNull null]){
+                     for (NSDictionary *snap in [snapshot.value allValues]) {
+                         NSLog(@"---> %@",snap);
+                         NSLog(@"---> %@",snapshot.key);
+                     }
+                 }
+             }];
+            
+            
+            /*_manager = [AFHTTPSessionManager manager];
+            _manager.responseSerializer=[AFHTTPResponseSerializer serializer];
+            _manager.responseSerializer.acceptableContentTypes = [_manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+            _manager.responseSerializer.acceptableContentTypes = [_manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];
+            
+            NSDictionary *params = @{@"user": usernameEncoded, @"count": [object valueForKey:@"count"]};
+            
+            [_manager POST:@"https://onesignal.com/api/v1/notifications" parameters:<#(nullable id)#> progress:<#^(NSProgress * _Nonnull uploadProgress)uploadProgress#> success:<#^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)success#> failure:<#^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error)failure#>*/
             //ADD PUSH BACK IN **********//
             /*PFQuery *sosQuery = [PFUser query];
             [sosQuery whereKey:@"username" equalTo:newtitle];
