@@ -6,4 +6,9 @@ target 'sneek' do
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
+  pod 'OneSignal', '>= 2.5.2', '< 3.0'
+end
+
+target 'OneSignalNotificationServiceExtension' do
+  pod 'OneSignal', '>= 2.5.2', '< 3.0'
 end

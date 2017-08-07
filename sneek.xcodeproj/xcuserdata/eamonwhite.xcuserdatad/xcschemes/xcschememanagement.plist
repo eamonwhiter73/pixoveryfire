@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>OneSignalNotificationServiceExtension.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
 		<key>sneek.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -12,6 +17,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>DD099E6C1F379FC900A1F9EA</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>DD3000F41C067A95002E43C1</key>
 		<dict>
 			<key>primary</key>

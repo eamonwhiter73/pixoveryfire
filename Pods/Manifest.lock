@@ -53,6 +53,7 @@ PODS:
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
+  - OneSignal (2.5.4)
 
 DEPENDENCIES:
   - Firebase/Auth
@@ -61,6 +62,7 @@ DEPENDENCIES:
   - Firebase/Storage
   - GeoFire (from `https://github.com/firebase/geofire-objc.git`)
   - GoogleMaps
+  - OneSignal (< 3.0, >= 2.5.2)
 
 EXTERNAL SOURCES:
   GeoFire:
@@ -84,7 +86,8 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   GTMSessionFetcher: 5ad62e8200fa00ed011fe5e08d27fef72c5b1429
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
+  OneSignal: da994bcf6a2efbdceaf71e389e1d05245c562899
 
-PODFILE CHECKSUM: be83578a1d1e7c16b36a87a84dc2504679f2a8f5
+PODFILE CHECKSUM: 1fb261640d6d5ca65d2ce1008c67ff5e82dbf581
 
 COCOAPODS: 1.2.0

@@ -238,14 +238,14 @@
                                    password:passwordTextField.text
                                  completion:^(FIRUser *_Nullable user, NSError *_Nullable error) {
                                      
-                                     
+                                     NSLog(@"%@   uUUUU id", user);
                                      
                                      //[userdefaults setObject:@"old" forKey:@"new"];
                                      [userdefaults setObject:textFieldLoc.text forKey:@"pfuser"];
                                      [userdefaults setObject:@"new" forKey:@"new"];
                                      [userdefaults setObject:passwordTextField.text forKey:@"pfpass"];
                                      [userdefaults setObject:emailFieldLoc.text forKey:@"pfemail"];
-                                     [userdefaults setObject:user.uid forKey:@"uuid"];
+                                     //[userdefaults setObject:user.uid forKey:@"uuid"];
                                      [userdefaults setInteger:0 forKey:@"count"];
                                      [userdefaults synchronize];
                                      
@@ -260,12 +260,10 @@
                                         [[[[UIApplication sharedApplication] delegate] window] setRootViewController:map];
                                     }];
                                      
-                                    /*[[[[_ref child:@"userData"] child:[userdefaults valueForKey:@"uuid"]] child:@"matches"] setValue:@0];*/
                                      
                                      
 
                                  }];
-        //user.email = emailFieldLoc.text;
         
         
         

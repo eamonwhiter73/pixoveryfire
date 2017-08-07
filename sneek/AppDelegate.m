@@ -13,7 +13,7 @@
 #import <Parse/Parse.h>
 @import Firebase;
 
-@interface AppDelegate ()
+@interface AppDelegate () 
 
 @end
 
@@ -30,8 +30,40 @@
     //
 }
 
+// Add this new method
+- (void)onOSSubscriptionChanged:(OSSubscriptionStateChanges*)stateChanges {
+    
+    // Example of detecting subscribing to OneSignal
+    if (!stateChanges.from.subscribed && stateChanges.to.subscribed) {
+        NSLog(@"Subscribed for OneSignal push notifications!");
+        
+    }
+    
+    // prints out all properties
+    NSLog(@"SubscriptionStateChanges:\n%@", stateChanges);
+    
+    NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
+    [userdefaults setObject:stateChanges.to.userId forKey:@"uuid"];
+    
+    
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc]initWithFrame:[[UIScreen mainScreen]bounds]];
+    
+    
+    [OneSignal addSubscriptionObserver:self];
+    [OneSignal initWithLaunchOptions:launchOptions
+                               appId:@"785c1a2c-a150-4986-a9b3-82cfe257db48"
+            handleNotificationAction:nil
+                            settings:@{kOSSettingsKeyAutoPrompt: @false}];
+    OneSignal.inFocusDisplayType = OSNotificationDisplayTypeNotification;
+    
+    // Recommend moving the below line to prompt for push after informing the user about
+    //   how your app will use them.
+    [OneSignal promptForPushNotificationsWithUserResponse:^(BOOL accepted) {
+        NSLog(@"User accepted notifications: %d", accepted);
+    }];
     
     //[Parse enableLocalDatastore];
     

@@ -578,13 +578,13 @@ typedef void (^CompletionHandlerType)();
     
     /*[geoFire getLocationForKey:[marker.userData objectForKey:@"markerid"] withCallback:^(CLLocation *location, NSError *error) {
         if (error != nil) {
-            NSLog(@"An error occurred getting the location for \"firebase-hq\": %@", [error localizedDescription]);
+            NSLog(@"An error occurred getting the location for "firebase-hq": %@", [error localizedDescription]);
         } else if (location != nil) {
-            NSLog(@"Location for \"firebase-hq\" is [%f, %f]",
+            NSLog(@"Location for "firebase-hq" is [%f, %f]",
                   location.coordinate.latitude,
                   location.coordinate.longitude);
         } else {
-            NSLog(@"GeoFire does not contain a location for \"firebase-hq\"");
+            NSLog(@"GeoFire does not contain a location for "firebase-hq"");
         }
     }];*/
     
@@ -855,7 +855,7 @@ typedef void (^CompletionHandlerType)();
 }
 
 - (void)info {
-    deviceNotFoundAlertController = [UIAlertController alertControllerWithTitle:@"CONTACT INFO" message:@"Website: http://eamondev.com\nE-mail: eamon@eamondev.com" preferredStyle:UIAlertControllerStyleAlert];
+    deviceNotFoundAlertController = [UIAlertController alertControllerWithTitle:@"CONTACT INFO" message:@"Website: http://eamondev.comnE-mail: eamon@eamondev.com" preferredStyle:UIAlertControllerStyleAlert];
     [deviceNotFoundAlertController addAction:deviceNotFoundAlert];
     
     [self presentViewController:deviceNotFoundAlertController animated:NO completion:NULL];
@@ -1373,7 +1373,7 @@ typedef void (^CompletionHandlerType)();
                 NSLog(@"removed   9808989(**(*(*(8898989898989");
             }];            //[deleteObjectId deleteInBackground];
             
-            
+            __block NSString *keyy = [[NSString alloc] init];
             [[[[self.ref child:@"userData"] queryOrderedByChild:@"username"]
               queryEqualToValue:newtitle]
                 observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
@@ -1383,18 +1383,31 @@ typedef void (^CompletionHandlerType)();
                          NSLog(@"---> %@",snap);
                          NSLog(@"---> %@",snapshot.key);
                      }
+                     
+                     keyy = [[NSString alloc] initWithString:snapshot.key];
+                     
                  }
              }];
             
-            
-            /*_manager = [AFHTTPSessionManager manager];
+            _manager = [AFHTTPSessionManager manager];
             _manager.responseSerializer=[AFHTTPResponseSerializer serializer];
-            _manager.responseSerializer.acceptableContentTypes = [_manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
-            _manager.responseSerializer.acceptableContentTypes = [_manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];
+            _manager.responseSerializer.acceptableContentTypes = [_manager.responseSerializer.acceptableContentTypes setByAddingObject:@"application/json"];
             
-            NSDictionary *params = @{@"user": usernameEncoded, @"count": [object valueForKey:@"count"]};
+            NSDictionary *params = @{@"app_id": @"785c1a2c-a150-4986-a9b3-82cfe257db48", @"include_player_ids": [userdefaults objectForKey:@"uuid"], @"content": [userdefaults objectForKey:@"pfuser"]};
             
-            [_manager POST:@"https://onesignal.com/api/v1/notifications" parameters:<#(nullable id)#> progress:<#^(NSProgress * _Nonnull uploadProgress)uploadProgress#> success:<#^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)success#> failure:<#^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error)failure#>*/
+            [_manager POST:@"http://192.168.1.131:8888/send.php" parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
+                NSLog(@"%@", uploadProgress);
+                
+            } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                NSLog(@"%@ response object ***(*(*(*((**(", responseObject);
+                
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                NSLog(@"%@", [error description]);
+            }];
+
+            
+            
+            /**/
             //ADD PUSH BACK IN **********//
             /*PFQuery *sosQuery = [PFUser query];
             [sosQuery whereKey:@"username" equalTo:newtitle];
