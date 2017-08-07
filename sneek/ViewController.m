@@ -1274,7 +1274,6 @@ typedef void (^CompletionHandlerType)();
         
         NSString * uploadURL = @"http://www.eamondev.com/sneekback/respond.php";
         NSLog(@"uploadImageURL: %@", uploadURL);
-        NSData *imageData = UIImageJPEGRepresentation(info[UIImagePickerControllerOriginalImage], 0.5);
         
         _manager = [AFHTTPSessionManager manager];
         _manager.responseSerializer=[AFHTTPResponseSerializer serializer];
@@ -1292,9 +1291,7 @@ typedef void (^CompletionHandlerType)();
         [xButton setUserInteractionEnabled:NO];
         [xButton setEnabled:NO];
         [indicator startAnimating];
-        
-        NSString* chaleng = [userdefaults objectForKey:@"pfuser"];
-        
+                
         UIImage *image1 = info[UIImagePickerControllerOriginalImage];
         UIImage *image2 = image.image;
         NSArray *array = @[image1,image2];
@@ -1395,7 +1392,7 @@ typedef void (^CompletionHandlerType)();
             
             NSDictionary *params = @{@"app_id": @"785c1a2c-a150-4986-a9b3-82cfe257db48", @"include_player_ids": [userdefaults objectForKey:@"uuid"], @"content": [userdefaults objectForKey:@"pfuser"]};
             
-            [_manager POST:@"http://192.168.1.131:8888/send.php" parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
+            [_manager POST:@"http://www.eamondev.com/sneekback/send.php" parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
                 NSLog(@"%@", uploadProgress);
                 
             } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {

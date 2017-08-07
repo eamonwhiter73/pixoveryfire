@@ -10,6 +10,7 @@
 #import <CoreData/CoreData.h>
 #import <CoreLocation/CoreLocation.h>
 #import <OneSignal/OneSignal.h>
+#import "AFHTTPSessionManager.h"
 
 @import UserNotifications;
 
@@ -19,6 +20,7 @@
 @property (strong, nonatomic) CLLocationManager *locationMgr;
 @property (nonatomic, strong) UINavigationController *navController;
 @property (nonatomic, assign) NSNumber* ran;
+@property (strong, nonatomic) AFHTTPSessionManager *manager;
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
