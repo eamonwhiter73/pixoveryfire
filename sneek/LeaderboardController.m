@@ -75,6 +75,8 @@
         leaderboardtitrect = CGRectMake(0, 20, 320, 60);
         userrect = CGRectMake(10, 90, 140, 20);
         matchesrect = CGRectMake(170, 90, 140, 20);
+        username.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0];
+
         matches.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0];
         backtomaprect = CGRectMake(10, 498, 300, 60);
         backToMap.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0];
@@ -195,16 +197,12 @@
     
     [[_ref child:@"userData/"] observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
         
-        NSLog(@"INSIDE LEADERBOARD REFFFFFF ******");
         
-        NSLog(@"%@   &&&&& snapppyyy  ((((((((", snapshot);
         if([snapshot exists]) {
             NSDictionary *dict = snapshot.value;
-            //NSLog(@"%@", [dict valueForKeyPath:@"data.abcd"][0];
-            //__block int sum = 0;
+
             entries = [NSMutableArray new];
             [dict enumerateKeysAndObjectsUsingBlock:^(NSString* key, NSNumber* value, BOOL* stop) {
-                //sum += value.intValue;
                 NSLog(@"%@ username  ", [value valueForKey:@"username"]);
                 NSLog(@"%@ matches  ", [value valueForKey:@"matches"]);
                 
@@ -231,35 +229,6 @@
     } withCancelBlock:^(NSError * _Nonnull error) {
         NSLog(@"%@", error.localizedDescription);
     }];
-    
-    /*PFQuery *query = [PFQuery queryWithClassName:@"_User"];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (!error) {
-                entries = [NSMutableArray new];
-                for (PFObject *object in objects) {
-                    [tableData addObject:[object valueForKey:@"username"]];
-                    [matchesForUser addObject:[object valueForKey:@"matches"]];
-                    
-                    NSMutableDictionary* entry = [NSMutableDictionary new];
-                    
-                    entry[@"username"] = [object valueForKey:@"username"];
-                    entry[@"matches"] = [object valueForKey:@"matches"];
-                    
-                    [entries addObject:entry];
-                }
-                NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"matches" ascending:NO selector:@selector(localizedStandardCompare:)];
-                NSArray *entrieshold = [entries sortedArrayUsingDescriptors:@[descriptor]];
-                transfer = [entrieshold copy];
-
-                [_tableView reloadData];
-                [_tableViewScore reloadData];
-                
-            }else{
-                NSLog(@"%@", [error description]);
-            }
-        });
-    }];*/
     
     [backToMap setFrame:backtomaprect];
     backToMap.backgroundColor = [UIColor colorWithRed:218.0f/255.0f green:247.0f/255.0f blue:220.0f/255.0f alpha:1.0f];

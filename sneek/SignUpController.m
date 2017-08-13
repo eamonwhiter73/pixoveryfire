@@ -230,9 +230,7 @@
 }
 
 - (void)createUser {
-    //PFUser *user = [PFUser user];
-    //user.username = textFieldLoc.text;
-    //user.password = passwordTextField.text;
+
     if([emailFieldLoc.text isValidEmail]) {
         [[FIRAuth auth] createUserWithEmail:emailFieldLoc.text
                                    password:passwordTextField.text
@@ -240,18 +238,14 @@
                                      
                                      NSLog(@"%@   uUUUU id", user);
                                      
-                                     //[userdefaults setObject:@"old" forKey:@"new"];
                                      [userdefaults setObject:textFieldLoc.text forKey:@"pfuser"];
                                      [userdefaults setObject:@"new" forKey:@"new"];
                                      [userdefaults setObject:passwordTextField.text forKey:@"pfpass"];
                                      [userdefaults setObject:emailFieldLoc.text forKey:@"pfemail"];
-                                     //[userdefaults setObject:user.uid forKey:@"uuid"];
                                      [userdefaults setInteger:0 forKey:@"count"];
                                      [userdefaults synchronize];
                                      
                                      NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:textFieldLoc.text, @"username", @0, @"matches", nil];
-                                     
-                                     NSLog(@"%@  uuuiiiidd    ", [userdefaults valueForKey:@"uuid"]);
                                      
                                     [[[_ref child:@"userData"] child:[userdefaults valueForKey:@"uuid"]] setValue:params withCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
                                         [self dismissViewControllerAnimated:YES completion:nil];
@@ -279,30 +273,6 @@
         
         return;
     }
-    
-    
-    
-    //[user setObject:@"0" forKey:@"matches"];
-    
-    
-    
-    /*[user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (!error) {
-            [userdefaults setObject:user.username forKey:@"pfuser"];
-            [userdefaults setObject:@"new" forKey:@"new"];
-            [userdefaults setObject:user.password forKey:@"pfpass"];
-            [userdefaults setObject:user.email forKey:@"pfemail"];
-            [userdefaults setInteger:0 forKey:@"count"];
-            [userdefaults synchronize];
-
-            [self dismissViewControllerAnimated:YES completion:nil];
-            
-            ViewController* map = [[ViewController alloc] init];
-            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:map];
-        } else {
-            NSLog(@"%@", [error userInfo][@"error"]);
-        }
-    }];*/
 }
 
 - (void)didReceiveMemoryWarning {

@@ -66,13 +66,6 @@
         NSLog(@"User accepted notifications: %d", accepted);
     }];
     
-    //[Parse enableLocalDatastore];
-    
-    //[Parse setApplicationId:@"MDgESuvjvz1K7l302i90N40A0EZDbwSKzb8k3QzL"
-                  //clientKey:@"pC3lhDsBTukDfJO8uR2hS9ZFZGpgQIIOjj05dP4A"];
-    
-    //[PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
-    
     [FIRApp configure];
     
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
@@ -157,65 +150,51 @@
 - (void)locationManager:(CLLocationManager *)manager
       didUpdateLocations:(NSArray *)locations {
     
-    //NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
-    
     CLLocation* location = [locations lastObject];
     NSDate* eventDate = location.timestamp;
     NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
     if (fabs(howRecent) < 15.0) {
         
-        
+        __block NSMutableArray *locs = [[NSMutableArray alloc] init];
         CLLocation *center = [[CLLocation alloc] initWithLatitude:location.coordinate.latitude longitude:location.coordinate.longitude];
-        // Query locations at [37.7832889, -122.4056973] with a radius of 600 meters
         FIRDatabaseReference *geofireRef = [[[FIRDatabase database] reference] child:@"pointloc/"];
         GeoFire *geoFire = [[GeoFire alloc] initWithFirebaseRef:geofireRef];
         GFCircleQuery *circleQuery = [geoFire queryAtLocation:center withRadius:0.25];
         
         FirebaseHandle handle = [circleQuery observeEventType:GFEventTypeKeyEntered withBlock:^(NSString *key, CLLocation *location) {
             
-            NSLog(@"Key '%@' entered the search area and is at location '%@'", key, location);
+            //NSLog(@"Key '%@' entered the search area and is at location '%@'", key, location);
+            if(![key isEqualToString:@""]) {
+                [locs addObject:key];
+            }
 
         }];
         
         [circleQuery observeReadyWithBlock:^{
-            _manager = [AFHTTPSessionManager manager];
-            _manager.responseSerializer=[AFHTTPResponseSerializer serializer];
-            _manager.responseSerializer.acceptableContentTypes = [_manager.responseSerializer.acceptableContentTypes setByAddingObject:@"application/json"];
-            
-            NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
-            
-            NSDictionary *params = @{@"app_id": @"785c1a2c-a150-4986-a9b3-82cfe257db48", @"include_player_ids": [userdefaults objectForKey:@"uuid"]};
-            
-            [_manager POST:@"http://www.eamondev.com/sneekback/sendnear.php" parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-                NSLog(@"%@", uploadProgress);
+
+            if([locs count] > 0) {
+                NSLog(@"LOCS COUNT IS GREATER THAN 0!!!!!");
+                _manager = [AFHTTPSessionManager manager];
+                _manager.responseSerializer=[AFHTTPResponseSerializer serializer];
+                _manager.responseSerializer.acceptableContentTypes = [_manager.responseSerializer.acceptableContentTypes setByAddingObject:@"application/json"];
                 
-            } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                NSLog(@"%@", responseObject);
+                NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
                 
-            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                NSLog(@"%@", [error description]);
-            }];
-        }];
-        
-        
-        /*PFGeoPoint *userGeoPoint = [PFGeoPoint geoPointWithLatitude:location.coordinate.latitude longitude:location.coordinate.longitude];
-        PFQuery *querygeo = [PFQuery queryWithClassName:@"MapPoints"];
-        [querygeo whereKey:@"location" nearGeoPoint:userGeoPoint withinMiles:0.155343];
-        querygeo.limit = 10;
-        
-        [querygeo findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-            
-            if (objects || objects.count){
-                PFQuery *sosQuery = [PFUser query];
-                [sosQuery whereKey:@"username" equalTo:[userdefaults objectForKey:@"pfuser"]];
-                sosQuery.limit = 1;
+                NSDictionary *params = @{@"app_id": @"785c1a2c-a150-4986-a9b3-82cfe257db48", @"include_player_ids": [userdefaults objectForKey:@"uuid"]};
                 
-                [sosQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-                    [PFCloud callFunctionInBackground:@"sendpushnear"
-                                       withParameters:@{@"user":(PFUser *)object.objectId, @"username":[userdefaults objectForKey:@"pfuser"]}];
+                [_manager POST:@"http://www.eamondev.com/sneekback/sendnear.php" parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
+                    NSLog(@"%@", uploadProgress);
+                    
+                } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                    NSLog(@"%@", responseObject);
+                    
+                } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                    NSLog(@"%@", [error description]);
                 }];
             }
-        }];*/
+            
+            locs = nil;
+        }];
     }
 }
 
@@ -248,7 +227,7 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
-
+               
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
