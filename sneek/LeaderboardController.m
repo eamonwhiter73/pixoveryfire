@@ -45,6 +45,7 @@
     self.ref = [[FIRDatabase database] reference];
 
     [self.view setBackgroundColor:[UIColor colorWithRed:156.0f/255.0f green:214.0f/255.0f blue:215.0f/255.0f alpha:1.0f]];
+    
     tableData = [[NSMutableArray alloc] init];
     matchesForUser = [[NSMutableArray alloc] init];
     sortedFirstArray = [[NSArray alloc] init];
@@ -64,9 +65,9 @@
     
     NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:@"LEADERBOARD" attributes:@{ NSParagraphStyleAttributeName : style, NSForegroundColorAttributeName : [UIColor colorWithRed:156.0f/255.0f green:214.0f/255.0f blue:215.0f/255.0f alpha:1.0f], NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0]}];
     
-    username = [[UILabel alloc] initWithFrame:userrect];
-    matches = [[UILabel alloc] initWithFrame:matchesrect];
-    backToMap = [[UIButton alloc] initWithFrame:backtomaprect];
+    username = [[UILabel alloc] init];
+    matches = [[UILabel alloc] init];
+    backToMap = [[UIButton alloc] init];
     
     if([screenWidth intValue] == 320) {
         tablehold = CGRectMake(10, 120, 300, 368);
@@ -75,9 +76,12 @@
         leaderboardtitrect = CGRectMake(0, 20, 320, 60);
         userrect = CGRectMake(10, 90, 140, 20);
         matchesrect = CGRectMake(170, 90, 140, 20);
-        username.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0];
+        NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0]};
+        username.attributedText = [[NSAttributedString alloc] initWithString:@"USERNAME"
+                                                                  attributes:underlineAttribute];
+        matches.attributedText = [[NSAttributedString alloc] initWithString:@"POINTS"
+                                                                 attributes:underlineAttribute];
 
-        matches.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0];
         backtomaprect = CGRectMake(10, 498, 300, 60);
         backToMap.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0];
     }
@@ -87,21 +91,27 @@
         tableviewscore = CGRectMake(285, 0, 70, 432);
         leaderboardtitrect = CGRectMake(0, 20, 375, 60);
         userrect = CGRectMake(10, 105, 140, 20);
-        username.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0];
-        matchesrect = CGRectMake(224, 105, 140, 20);
-        matches.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0];
+        NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0]};
+        username.attributedText = [[NSAttributedString alloc] initWithString:@"USERNAME"
+                                                                  attributes:underlineAttribute];
+        matchesrect = CGRectMake(220, 105, 140, 20);
+        matches.attributedText = [[NSAttributedString alloc] initWithString:@"POINTS"
+                                                                 attributes:underlineAttribute];
         backtomaprect = CGRectMake(10, 585, 355, 72);
         backToMap.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0];
     }
     if([screenWidth intValue] == 414) {
         tablehold = CGRectMake(10, 154, 394, 477);
-        tablehold = CGRectMake(0, 0, 298, 477);
+        tableviewhold = CGRectMake(0, 0, 298, 477);
         tableviewscore = CGRectMake(317, 0, 77, 477);
         leaderboardtitrect = CGRectMake(0, 22, 414, 80);
         userrect = CGRectMake(10, 116, 154, 22);
-        username.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0];
-        matchesrect = CGRectMake(247, 116, 154, 22);
-        matches.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0];
+        NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0]};
+        username.attributedText = [[NSAttributedString alloc] initWithString:@"USERNAME"
+                                                                  attributes:underlineAttribute];
+        matchesrect = CGRectMake(245, 116, 154, 22);
+        matches.attributedText = [[NSAttributedString alloc] initWithString:@"POINTS"
+                                                                 attributes:underlineAttribute];
         backtomaprect = CGRectMake(10, 645.5, 394, 80);
         backToMap.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0];
     }
@@ -114,13 +124,17 @@
         attrString = [[NSAttributedString alloc] initWithString:@"LEADERBOARD" attributes:@{ NSParagraphStyleAttributeName : style, NSForegroundColorAttributeName : [UIColor colorWithRed:156.0f/255.0f green:214.0f/255.0f blue:215.0f/255.0f alpha:1.0f], NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:48.0]}];
         
         userrect = CGRectMake(20, 161, 287, 30);
-        username.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0];
-        matchesrect = CGRectMake(459, 161, 287, 30);
-        matches.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0];
+        NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0]};
+        username.attributedText = [[NSAttributedString alloc] initWithString:@"USERNAME"
+                                                                  attributes:underlineAttribute];
+        matchesrect = CGRectMake(446, 161, 287, 30);
+        matches.attributedText = [[NSAttributedString alloc] initWithString:@"POINTS"
+                                                                 attributes:underlineAttribute];
         backtomaprect = CGRectMake(20, 898, 727, 110.5);
         backToMap.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:42.0];
     }
     if([screenWidth intValue] == 1024){
+        
         tablehold = CGRectMake(27, 287, 969, 885);
         tableviewhold = CGRectMake(0, 0, 737, 885);
         tableviewscore = CGRectMake(778, 0, 191, 885);
@@ -129,9 +143,13 @@
         attrString = [[NSAttributedString alloc] initWithString:@"LEADERBOARD" attributes:@{ NSParagraphStyleAttributeName : style, NSForegroundColorAttributeName : [UIColor colorWithRed:156.0f/255.0f green:214.0f/255.0f blue:215.0f/255.0f alpha:1.0f], NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:72.0]}];
         
         userrect = CGRectMake(27, 215, 382, 73);
-        username.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:36.0];
-        matchesrect = CGRectMake(612, 215, 382, 73);
-        matches.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:36.0];
+        
+        NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Bold" size:30.0]};
+        username.attributedText = [[NSAttributedString alloc] initWithString:@"USERNAME"
+                                                                  attributes:underlineAttribute];
+        matchesrect = CGRectMake(574, 215, 382, 73);
+        matches.attributedText = [[NSAttributedString alloc] initWithString:@"POINTS"
+                                                                  attributes:underlineAttribute];
         
         backtomaprect = CGRectMake(27, 1198, 969, 147);
         backToMap.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:54.0];
@@ -176,17 +194,17 @@
     [username setFrame:userrect];
     username.backgroundColor = [UIColor clearColor];
     username.textColor = [UIColor colorWithRed:218.0f/255.0f green:247.0f/255.0f blue:220.0f/255.0f alpha:1.0f];
-    NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
+    /*NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
     username.attributedText = [[NSAttributedString alloc] initWithString:@"USERNAME"
-                                                               attributes:underlineAttribute];
+                                                               attributes:underlineAttribute];*/
     username.textAlignment = NSTextAlignmentLeft;
     [self.view addSubview:username];
     
     [matches setFrame:matchesrect];
     matches.backgroundColor = [UIColor clearColor];
-    NSDictionary *underlineAttribute2 = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
-    matches.attributedText = [[NSAttributedString alloc] initWithString:@"MATCHES"
-                                                             attributes:underlineAttribute2];
+    /*NSDictionary *underlineAttribute2 = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
+    matches.attributedText = [[NSAttributedString alloc] initWithString:@"POINTS"
+                                                             attributes:underlineAttribute2];*/
     matches.textColor = [UIColor colorWithRed:218.0f/255.0f green:247.0f/255.0f blue:220.0f/255.0f alpha:1.0f];
     matches.textAlignment = NSTextAlignmentRight;
     [self.view addSubview:matches];
@@ -207,13 +225,13 @@
                 NSLog(@"%@ matches  ", [value valueForKey:@"matches"]);
                 
                     [tableData addObject:[value valueForKey:@"username"]];
-                    [matchesForUser addObject:[[NSString alloc] initWithFormat:@"%@", [value valueForKey:@"matches"]]];
+                    [matchesForUser addObject:[[NSString alloc] initWithFormat:@"%d", (([[value valueForKey:@"matches"] intValue] * 6) + [[value valueForKey:@"drops"] intValue])]];
                     
                     NSMutableDictionary* entry = [NSMutableDictionary new];
                     
                     entry[@"username"] = [value valueForKey:@"username"];
-                    entry[@"matches"] = [[NSString alloc] initWithFormat:@"%@", [value valueForKey:@"matches"]];
-                    
+                    entry[@"matches"] = [[NSString alloc] initWithFormat:@"%d", (([[value valueForKey:@"matches"] intValue] * 6) + [[value valueForKey:@"drops"] intValue])];
+                
                     [entries addObject:entry];
             }];
             
@@ -271,8 +289,8 @@
         contentV.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0];
         if([screenWidth intValue] == 1024) {
             contentV = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 737, 44)];
-            contentV.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:32.0];
-            cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:32.0];
+            contentV.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:22.0];
+            cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:22.0];
         }
         else if([screenWidth intValue] == 768) {
             contentV = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 607, 44)];
@@ -295,7 +313,7 @@
     else {
         cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0];
         if([screenWidth intValue] == 1024) {
-            cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:32.0];
+            cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:22.0];
         }
         else if([screenWidth intValue] == 768) {
             cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0];

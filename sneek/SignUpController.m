@@ -226,6 +226,7 @@
     
     userdefaults = [NSUserDefaults standardUserDefaults];
     [userdefaults setInteger:0 forKey:@"matches"];
+    [userdefaults setInteger:0 forKey:@"drops"];
     
 }
 
@@ -235,17 +236,14 @@
         [[FIRAuth auth] createUserWithEmail:emailFieldLoc.text
                                    password:passwordTextField.text
                                  completion:^(FIRUser *_Nullable user, NSError *_Nullable error) {
-                                     
-                                     NSLog(@"%@   uUUUU id", user);
-                                     
+                                                                          
                                      [userdefaults setObject:textFieldLoc.text forKey:@"pfuser"];
                                      [userdefaults setObject:@"new" forKey:@"new"];
                                      [userdefaults setObject:passwordTextField.text forKey:@"pfpass"];
                                      [userdefaults setObject:emailFieldLoc.text forKey:@"pfemail"];
-                                     [userdefaults setInteger:0 forKey:@"count"];
                                      [userdefaults synchronize];
                                      
-                                     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:textFieldLoc.text, @"username", @0, @"matches", nil];
+                                     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:textFieldLoc.text, @"username", @0, @"matches", @0, @"drops", nil];
                                      
                                     [[[_ref child:@"userData"] child:[userdefaults valueForKey:@"uuid"]] setValue:params withCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
                                         [self dismissViewControllerAnimated:YES completion:nil];

@@ -36,7 +36,7 @@ typedef void (^CompletionHandlerType)();
     UIButton *infobut;
     bool isResponding;
     GMSMarker *staticMarker;
-    NSNumber *staticCount;
+    //NSNumber *staticCount;
     UILabel *matchesNumber;
     UILabel *myMatches;
     NSNumber *matched;
@@ -59,6 +59,7 @@ typedef void (^CompletionHandlerType)();
     UILabel *tute;
     InvisibleButtonView *invisible;
     NSUUID *uuid;
+    NSInteger drops;
 }
 
 @end
@@ -212,7 +213,7 @@ typedef void (^CompletionHandlerType)();
     style.headIndent = 5.0f;
     style.tailIndent = -5.0f;
     
-    NSAttributedString *attrText = [[NSAttributedString alloc] initWithString:@"MY MATCHES" attributes:@{ NSParagraphStyleAttributeName : style, NSForegroundColorAttributeName : [UIColor colorWithRed:211.0f/255.0f green:243.0f/255.0f blue:219.0f/255.0f alpha:1.0f], NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0]}];
+    NSAttributedString *attrText = [[NSAttributedString alloc] initWithString:@"MY POINTS" attributes:@{ NSParagraphStyleAttributeName : style, NSForegroundColorAttributeName : [UIColor colorWithRed:211.0f/255.0f green:243.0f/255.0f blue:219.0f/255.0f alpha:1.0f], NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0]}];
     
     if([screenWidth intValue] == 320) {
         invisible = [[InvisibleButtonView alloc] initWithFrame:CGRectMake(0, 538, 80, 30)];
@@ -234,7 +235,7 @@ typedef void (^CompletionHandlerType)();
         tome.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"tome"]];
         myMatches = [[UILabel alloc] initWithFrame:CGRectMake(67.5, 40, 185, 30)];
         myMatches.layer.cornerRadius = 3.0f;
-        matchesNumber = [[UILabel alloc] initWithFrame:CGRectMake(120, 5, 60, 20)];
+        matchesNumber = [[UILabel alloc] initWithFrame:CGRectMake(100, 5, 80, 20)];
         matchesNumber.layer.cornerRadius = 3.0f;
         [matchesNumber setFont:[UIFont systemFontOfSize:16]];
         statusback = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
@@ -264,7 +265,7 @@ typedef void (^CompletionHandlerType)();
         tome.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"tome"]];
         myMatches = [[UILabel alloc] initWithFrame:CGRectMake(95, 40, 185, 30)];
         myMatches.layer.cornerRadius = 3.0f;
-        matchesNumber = [[UILabel alloc] initWithFrame:CGRectMake(120, 5, 60, 20)];
+        matchesNumber = [[UILabel alloc] initWithFrame:CGRectMake(100, 5, 80, 20)];
         matchesNumber.layer.cornerRadius = 3.0f;
         [matchesNumber setFont:[UIFont systemFontOfSize:16]];
         statusback = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 375, 20)];
@@ -294,7 +295,7 @@ typedef void (^CompletionHandlerType)();
         tome.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"tome"]];
         myMatches = [[UILabel alloc] initWithFrame:CGRectMake(105, 44, 204, 33)];
         myMatches.layer.cornerRadius = 3.0f;
-        matchesNumber = [[UILabel alloc] initWithFrame:CGRectMake(120, 7, 77, 20)];
+        matchesNumber = [[UILabel alloc] initWithFrame:CGRectMake(100, 7, 97, 20)];
         matchesNumber.layer.cornerRadius = 3.0f;
         [matchesNumber setFont:[UIFont systemFontOfSize:16]];
         statusback = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 414, 20)];
@@ -326,8 +327,8 @@ typedef void (^CompletionHandlerType)();
         camerabut.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"camerabutipadp"]];
         myMatches = [[UILabel alloc] initWithFrame:CGRectMake(195, 61, 379, 51)];
         myMatches.layer.cornerRadius = 5.5f;
-        attrText = [[NSAttributedString alloc] initWithString:@"MY MATCHES" attributes:@{ NSParagraphStyleAttributeName : style, NSForegroundColorAttributeName : [UIColor colorWithRed:211.0f/255.0f green:243.0f/255.0f blue:219.0f/255.0f alpha:1.0f], NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:32.0]}];
-        matchesNumber = [[UILabel alloc] initWithFrame:CGRectMake(229, 6, 144.5, 39)];
+        attrText = [[NSAttributedString alloc] initWithString:@"MY POINTS" attributes:@{ NSParagraphStyleAttributeName : style, NSForegroundColorAttributeName : [UIColor colorWithRed:211.0f/255.0f green:243.0f/255.0f blue:219.0f/255.0f alpha:1.0f], NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:32.0]}];
+        matchesNumber = [[UILabel alloc] initWithFrame:CGRectMake(191, 6, 182.5, 39)];
         matchesNumber.layer.cornerRadius = 3.0f;
         [matchesNumber setFont:[UIFont systemFontOfSize:32]];
         statusback = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 768, 20)];
@@ -357,8 +358,8 @@ typedef void (^CompletionHandlerType)();
         camerabut.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"camerabutipadp"]];
         myMatches = [[UILabel alloc] initWithFrame:CGRectMake(300, 109, 425, 60)];
         myMatches.layer.cornerRadius = 8.0f;
-        attrText = [[NSAttributedString alloc] initWithString:@"MY MATCHES" attributes:@{ NSParagraphStyleAttributeName : style, NSForegroundColorAttributeName : [UIColor colorWithRed:211.0f/255.0f green:243.0f/255.0f blue:219.0f/255.0f alpha:1.0f], NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:32.0]}];
-        matchesNumber = [[UILabel alloc] initWithFrame:CGRectMake(228, 10, 189, 41)];
+        attrText = [[NSAttributedString alloc] initWithString:@"MY POINTS" attributes:@{ NSParagraphStyleAttributeName : style, NSForegroundColorAttributeName : [UIColor colorWithRed:211.0f/255.0f green:243.0f/255.0f blue:219.0f/255.0f alpha:1.0f], NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:32.0]}];
+        matchesNumber = [[UILabel alloc] initWithFrame:CGRectMake(190, 10, 227, 41)];
         matchesNumber.layer.cornerRadius = 8.0f;
         [matchesNumber setFont:[UIFont systemFontOfSize:32]];
         statusback = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1024, 20)];
@@ -441,7 +442,8 @@ typedef void (^CompletionHandlerType)();
     }
     
     NSUInteger matches = [userdefaults integerForKey:@"matches"];
-    matchesNumber.text = [[NSString alloc] initWithFormat:@"%lu", (unsigned long)matches];
+    NSUInteger dropsInt = [userdefaults integerForKey:@"drops"];
+    matchesNumber.text = [[NSString alloc] initWithFormat:@"%lu", (((unsigned long)matches * 6) + (unsigned long)dropsInt)];
     [myMatches addSubview:matchesNumber];
     
     statusback.backgroundColor = [UIColor colorWithRed:156.0f/255.0f green:214.0f/255.0f blue:215.0f/255.0f alpha:1.0f];
@@ -533,7 +535,7 @@ typedef void (^CompletionHandlerType)();
 
                 NSLog(@"%@", snapshot);
                 NSDictionary *dict = snapshot.value;
-                staticCount = [dict valueForKey:@"count"];
+                //staticCount = [dict valueForKey:@"count"];
                 newtitle = [dict valueForKey:@"title"];
 
             } withCancelBlock:^(NSError * _Nonnull error) {
@@ -631,7 +633,8 @@ typedef void (^CompletionHandlerType)();
 }
 
 - (void)info {
-    deviceNotFoundAlertController = [UIAlertController alertControllerWithTitle:@"CONTACT INFO" message:@"Website: http://eamondev.com\nE-mail: eamon@eamondev.com" preferredStyle:UIAlertControllerStyleAlert];
+    
+    deviceNotFoundAlertController = [UIAlertController alertControllerWithTitle:@"INFO" message:@"\n-RULES-\n\nDrop a pix: 1 pt.\nMatch a pix: 6 pts.\n\nYou do not get points for matching your own pix\n\n-CONTACT-\n\nWebsite: http://eamondev.com\nE-mail: eamon@eamondev.com" preferredStyle:UIAlertControllerStyleAlert];
     [deviceNotFoundAlertController addAction:deviceNotFoundAlert];
     
     [self presentViewController:deviceNotFoundAlertController animated:NO completion:NULL];
@@ -743,14 +746,14 @@ typedef void (^CompletionHandlerType)();
                                              NSLog(@"Saved location successfully!");
                                              
                                              
-                                             NSUInteger count = [userdefaults integerForKey:@"count"];
+                                             /*NSUInteger count = [userdefaults integerForKey:@"count"];
                                              NSNumber *stored = [NSNumber numberWithInteger:count];
                                              count++;
-                                             [userdefaults setInteger:count forKey:@"count"];
+                                             [userdefaults setInteger:count forKey:@"count"];*/
                                              
                                              
                                              [[[_ref child:@"pointdata/"] child:[[NSString alloc] initWithFormat:@"%@", uuid]]
-                                              setValue:@{@"title": [userdefaults objectForKey:@"pfuser"], @"count": stored, @"matched": matched} withCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
+                                              setValue:@{@"title": [userdefaults objectForKey:@"pfuser"], @"matched": matched} withCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
                                                   NSLog(@"Location set and in database (((()()()()()()()()");
                                                   
                                                   GMSMarker *marker3 = [[GMSMarker alloc] init];
@@ -759,6 +762,13 @@ typedef void (^CompletionHandlerType)();
                                                   marker3.icon = [UIImage imageNamed:@"marker"];
                                                   marker3.userData = @{@"marker_id":[ref key]};
                                                   marker3.map = mapView_;
+                                                  drops = [userdefaults integerForKey:@"drops"];
+                                                  drops++;
+                                                  [userdefaults setInteger:drops forKey:@"drops"];
+                                                  NSNumber *dropAmount = [[NSNumber alloc] initWithInt:(int)drops];
+                                                  NSInteger matchh = [userdefaults integerForKey:@"matches"];
+                                                  matchesNumber.text = [[NSString alloc] initWithFormat:@"%ld", ((long)drops + (matchh * 6))];
+                                                  [[[[_ref child:@"userData/"] child:[userdefaults objectForKey:@"uuid"]] child:@"drops"] setValue:dropAmount];
                                                   [indicator stopAnimating];
                                               }];
                                              
@@ -770,12 +780,7 @@ typedef void (^CompletionHandlerType)();
 
                                          }
                                      }];
-                       
-                       
-                       
-
-
-                       
+                  
                        [indicator stopAnimating];
                    }
                }];
@@ -806,7 +811,7 @@ typedef void (^CompletionHandlerType)();
         
         NSString *usernameEncoded = [[userdefaults objectForKey:@"pfuser"] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         
-        NSDictionary *params = @{@"username": staticMarker.title, @"challenger": usernameEncoded, @"count": staticCount};
+        NSDictionary *params = @{@"username": staticMarker.title, @"challenger": usernameEncoded};
         
         [pickery dismissViewControllerAnimated:YES completion:NULL];
         
@@ -851,17 +856,22 @@ typedef void (^CompletionHandlerType)();
             
             NSNumber *match;
             NSInteger matches;
+            NSInteger ddrops;
             if([[userdefaults objectForKey:@"pfuser"] isEqualToString:newtitle]) {
                 matches = [userdefaults integerForKey:@"matches"];
+                ddrops = [userdefaults integerForKey:@"drops"];
                 match = [[NSNumber alloc] initWithInt:(int)matches];
-                matchesNumber.text = [[NSString alloc] initWithFormat:@"%lu", (unsigned long)matches];
+                matchesNumber.text = [[NSString alloc] initWithFormat:@"%lu", (((unsigned long)matches * 6) + ddrops)];
             }
             else {
                 matches = [userdefaults integerForKey:@"matches"];
                 matches++;
                 [userdefaults setInteger:matches forKey:@"matches"];
                 match = [[NSNumber alloc] initWithInt:(int)matches];
-                matchesNumber.text = [[NSString alloc] initWithFormat:@"%lu", (unsigned long)matches];
+                ddrops = [userdefaults integerForKey:@"drops"];
+                ddrops++;
+                [userdefaults setInteger:ddrops forKey:@"drops"];
+                matchesNumber.text = [[NSString alloc] initWithFormat:@"%lu", (((unsigned long)matches * 6) + ddrops)];
             }
             
             FIRDatabaseReference *geofireRef = [[[FIRDatabase database] reference] child:@"pointloc/"];
@@ -872,11 +882,12 @@ typedef void (^CompletionHandlerType)();
             
             NSLog(@"%@", [userdefaults objectForKey:@"uuid"]);
             
-            [[[_ref child:@"userData/"] child:[userdefaults objectForKey:@"uuid"]] setValue:@{@"matches":match, @"username":[userdefaults objectForKey:@"pfuser"]}];
+            [[[[_ref child:@"userData/"] child:[userdefaults objectForKey:@"uuid"]] child:@"matches"] setValue:match];
             
             [[[_ref child:@"pointdata/"] child:[staticMarker.userData objectForKey:@"marker_id"]] removeValueWithCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
                 NSLog(@"removed   9808989(**(*(*(8898989898989");
             }];
+
             
             __block NSString *keyy = [[NSString alloc] init];
             [[[[self.ref child:@"userData"] queryOrderedByChild:@"username"]
